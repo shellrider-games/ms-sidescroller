@@ -4,6 +4,7 @@ ensureImport "listUtil"
 ensureImport "mapUtil"
 ensureImport "scene"
 ensureImport "actor"
+ensureImport "spriteActor"
 
 sceneManager = {}
 sceneManager.scenes = {}
@@ -62,12 +63,38 @@ scene2 = new scene.Scene
 scene2.init
 scene2.onLoad = function
     super.onLoad
-    print "Loaded Scene2"
+    myWumpus = new spriteActor.SpriteActor
+    myWumpus.elapsed = 0
+    myWumpus.onLoad = function
+        myWumpus.sprite.image = file.loadImage("/sys/pics/Wumpus.png")
+        myWumpus.position.x = 480
+        myWumpus.position.y = 320
+        super.onLoad
+    end function
+    myWumpus.update = function(deltaTime)
+        myWumpus.elapsed += deltaTime
+        myWumpus.position.x = 480 + 200 * sin(2*myWumpus.elapsed)
+        myWumpus.position.y = 320 + 100 * cos(2*myWumpus.elapsed)
+        myWumpus.rotation = (myWumpus.rotation + 50 * deltaTime) % 360
+        super.update deltaTime
+    end function
+
+    scene2.actors.push myWumpus
+    for actor in scene2.actors
+        actor.onLoad
+    end for
 end function
 scene2.inputActions["prevScene"] = function
     print "Request loading Scene1"
     scene2.requestSceneSwitch "Scene1"
 end function
+scene2.onUnload = function
+    for actor in scene2.actors
+        actor.onUnload
+    end for
+    super.onUnload
+end function
+
 sceneManager.scenes["Scene2"] = scene2
 
 sceneManager.switchScene "Scene1"

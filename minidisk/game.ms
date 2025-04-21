@@ -5,6 +5,7 @@ ensureImport "mapUtil"
 ensureImport "scene"
 ensureImport "actor"
 ensureImport "spriteActor"
+ensureImport "playerCharacter"
 
 sceneManager = {}
 sceneManager.scenes = {}
@@ -47,7 +48,7 @@ sceneManager.cleanPressedKeys = function
         if not key.pressed(pressedKey) then toRemove.push pressedKey
     end for
     for pressedKey in toRemove
-        self.currentScene.executeInputAction self.inputReleaseMap[pressedKeym]
+        self.currentScene.executeInputAction self.inputReleaseMap[pressedKey]
         self.alreadyPressedKeys.removeVal pressedKey
     end for
 end function
@@ -57,6 +58,11 @@ scene1.init
 scene1.horizontalInput = 0
 scene1.onLoad = function
     super.onLoad
+    scene1.player = new playerCharacter.PlayerCharacter
+    scene1.player.position.x = 480
+    scene1.player.position.y = 320
+    scene1.actors.push scene1.player
+    scene1.player.onLoad
 end function
 
 scene1.inputActions["leftDown"] = function
@@ -77,10 +83,7 @@ end function
 
 scene1.update = function(deltaTime)
     super.update deltaTime
-    display(3).clear
-    display(3).row = 24
-    display(3).column = 66
-    display(3).print scene1.horizontalInput
+    scene1.player.inputVector = scene1.horizontalInput
 end function
 
 sceneManager.scenes["Scene1"] = scene1

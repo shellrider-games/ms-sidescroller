@@ -28,6 +28,7 @@ sceneManager.alreadyPressedKeys = []
 sceneManager.inputMap = {}
 sceneManager.inputMap["left"] = "leftDown"
 sceneManager.inputMap["right"] = "rightDown"
+sceneManager.inputMap["up"] = "upDown"
 
 sceneManager.inputReleaseMap = {}
 sceneManager.inputReleaseMap["left"] = "leftUp"
@@ -48,7 +49,10 @@ sceneManager.cleanPressedKeys = function
         if not key.pressed(pressedKey) then toRemove.push pressedKey
     end for
     for pressedKey in toRemove
-        self.currentScene.executeInputAction self.inputReleaseMap[pressedKey]
+        inputAction = self.inputReleaseMap.get(pressedKey)
+        if inputAction then
+            self.currentScene.executeInputAction self.inputReleaseMap[pressedKey]
+        end if
         self.alreadyPressedKeys.removeVal pressedKey
     end for
 end function
@@ -80,6 +84,11 @@ end function
 scene1.inputActions["rightUp"] = function
     scene1.horizontalInput -= 1
 end function
+
+scene1.inputActions["upDown"] = function
+    scene1.player.jump
+end function
+
 
 scene1.update = function(deltaTime)
     super.update deltaTime

@@ -25,8 +25,13 @@ end function
 sceneManager.alreadyPressedKeys = []
 
 sceneManager.inputMap = {}
-sceneManager.inputMap["left"] = "prevScene"
-sceneManager.inputMap["right"] = "nextScene"
+sceneManager.inputMap["left"] = "leftDown"
+sceneManager.inputMap["right"] = "rightDown"
+
+sceneManager.inputReleaseMap = {}
+sceneManager.inputReleaseMap["left"] = "leftUp"
+sceneManager.inputReleaseMap["right"] = "rightUp"
+
 sceneManager.handleInputActions = function
     for inputKey in self.inputMap.indexes
         if not self.alreadyPressedKeys.contains(inputKey) and key.pressed(inputKey) then 
@@ -42,60 +47,43 @@ sceneManager.cleanPressedKeys = function
         if not key.pressed(pressedKey) then toRemove.push pressedKey
     end for
     for pressedKey in toRemove
+        self.currentScene.executeInputAction self.inputReleaseMap[pressedKeym]
         self.alreadyPressedKeys.removeVal pressedKey
     end for
 end function
 
 scene1 = new scene.Scene
 scene1.init
+scene1.horizontalInput = 0
 scene1.onLoad = function
     super.onLoad
-    print "Loaded Scene1"
 end function
-scene1.inputActions["nextScene"] = function
-    print "Request loading Scene2"
-    scene1.requestSceneSwitch "Scene2"
+
+scene1.inputActions["leftDown"] = function
+    scene1.horizontalInput -= 1
+end function
+
+scene1.inputActions["leftUp"] = function
+    scene1.horizontalInput += 1
+end function
+
+scene1.inputActions["rightDown"] = function
+    scene1.horizontalInput += 1
+end function
+
+scene1.inputActions["rightUp"] = function
+    scene1.horizontalInput -= 1
+end function
+
+scene1.update = function(deltaTime)
+    super.update deltaTime
+    display(3).clear
+    display(3).row = 24
+    display(3).column = 66
+    display(3).print scene1.horizontalInput
 end function
 
 sceneManager.scenes["Scene1"] = scene1
-
-scene2 = new scene.Scene
-scene2.init
-scene2.onLoad = function
-    super.onLoad
-    myWumpus = new spriteActor.SpriteActor
-    myWumpus.elapsed = 0
-    myWumpus.onLoad = function
-        myWumpus.sprite.image = file.loadImage("/sys/pics/Wumpus.png")
-        myWumpus.position.x = 480
-        myWumpus.position.y = 320
-        super.onLoad
-    end function
-    myWumpus.update = function(deltaTime)
-        myWumpus.elapsed += deltaTime
-        myWumpus.position.x = 480 + 200 * sin(2*myWumpus.elapsed)
-        myWumpus.position.y = 320 + 100 * cos(2*myWumpus.elapsed)
-        myWumpus.rotation = (myWumpus.rotation + 50 * deltaTime) % 360
-        super.update deltaTime
-    end function
-
-    scene2.actors.push myWumpus
-    for actor in scene2.actors
-        actor.onLoad
-    end for
-end function
-scene2.inputActions["prevScene"] = function
-    print "Request loading Scene1"
-    scene2.requestSceneSwitch "Scene1"
-end function
-scene2.onUnload = function
-    for actor in scene2.actors
-        actor.onUnload
-    end for
-    super.onUnload
-end function
-
-sceneManager.scenes["Scene2"] = scene2
 
 sceneManager.switchScene "Scene1"
 

@@ -3,6 +3,9 @@ ensureImport "spriteActor"
 PlayerCharacter = new spriteActor.SpriteActor
 PlayerCharacter.onLoad = function
     self.sprite.image = file.loadImage("sprites/playerCharacter.png")
+    self.sprite.localBounds = new Bounds
+    self.sprite.localBounds.width = self.sprite.image.width
+    self.sprite.localBounds.height = self.sprite.image.height
     super.onLoad
 end function
 PlayerCharacter.inputVector = 0
@@ -17,8 +20,8 @@ PlayerCharacter.update = function(deltaTime)
     self.position.x = self.position.x + self.velocity.x * deltaTime
     self.position.y = self.position.y + self.velocity.y * deltaTime
 
-    if self.position.y < 32 then
-        self.position.y = 32
+    if self.position.y <  self.sprite.worldBounds.height * 0.5 then
+        self.position.y = self.sprite.worldBounds.height * 0.5
         self.velocity.y = 0
     end if
 
@@ -26,5 +29,7 @@ PlayerCharacter.update = function(deltaTime)
 end function
 
 PlayerCharacter.jump = function
-    if self.position.y == 32 then self.velocity.y = self.jumpStrength
+    if self.position.y <= self.sprite.worldBounds.height * 0.5 then
+        self.velocity.y = self.jumpStrength
+    end if
 end function

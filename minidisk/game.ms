@@ -6,6 +6,7 @@ ensureImport "scene"
 ensureImport "actor"
 ensureImport "spriteActor"
 ensureImport "playerCharacter"
+ensureImport "platformActor"
 
 sceneManager = {}
 sceneManager.scenes = {}
@@ -21,6 +22,7 @@ sceneManager.switchScene = function(sceneName)
     sceneManager.currentScene = scene
     sceneManager.currentScene.requestSceneSwitch = @sceneManager.switchScene
     sceneManager.currentScene.onLoad
+    sceneManager.currentScene.onLoadEnd
 end function
 
 sceneManager.alreadyPressedKeys = []
@@ -62,11 +64,14 @@ scene1.init
 scene1.horizontalInput = 0
 scene1.onLoad = function
     super.onLoad
-    scene1.player = new playerCharacter.PlayerCharacter
-    scene1.player.position.x = 480
-    scene1.player.position.y = 320
+    pf = platformActor.create(660, 100)
+    scene1.actors.push pf
+
+    pf2 = platformActor.create(220, 100)
+    scene1.actors.push pf2
+
+    scene1.player = playerCharacter.create(480, 320)
     scene1.actors.push scene1.player
-    scene1.player.onLoad
 end function
 
 scene1.inputActions["leftDown"] = function
@@ -91,8 +96,8 @@ end function
 
 
 scene1.update = function(deltaTime)
-    super.update deltaTime
     scene1.player.inputVector = scene1.horizontalInput
+    super.update deltaTime
 end function
 
 sceneManager.scenes["Scene1"] = scene1

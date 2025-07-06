@@ -1,6 +1,16 @@
 ensureImport "spriteActor"
 
+
+
 PlayerCharacter = new spriteActor.SpriteActor
+
+create = function(x = 0, y = 0)
+    noob = new PlayerCharacter
+    noob.sprite = new Sprite
+    noob.position = {"x": x, "y": y}
+    return noob
+end function
+
 PlayerCharacter.onLoad = function
     self.sprite.image = file.loadImage("sprites/playerCharacter.png")
     self.sprite.localBounds = new Bounds
@@ -24,8 +34,7 @@ PlayerCharacter.update = function(deltaTime)
         self.position.y = self.sprite.worldBounds.height * 0.5
         self.velocity.y = 0
     end if
-
-    super.update
+    super.update delta
 end function
 
 PlayerCharacter.jump = function

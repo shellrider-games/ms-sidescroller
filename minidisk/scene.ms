@@ -15,6 +15,12 @@ Scene.onLoad = function
     self.actors = []
 end function
 
+Scene.onLoadEnd = function
+    for actor in self.actors
+        actor.onLoad
+    end for
+end function
+
 Scene.onUnload = function
     self.actors = []
 end function

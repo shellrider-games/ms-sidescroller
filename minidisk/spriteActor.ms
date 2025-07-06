@@ -2,9 +2,17 @@ ensureImport "actor"
 ensureImport "listUtil"
 
 SpriteActor = new actor.Actor
-SpriteActor.sprite = new Sprite
-SpriteActor.position = {"x":0, "y":0}
+SpriteActor.sprite = null
+SpriteActor.position = null
 SpriteActor.rotation = 0
+
+create = function(sprite, position, rotation = 0)
+    noob = new SpriteActor
+    noob.sprite = sprite
+    noob.position = position
+    noob.rotation = rotation
+    return noob
+end function
 
 SpriteActor.onLoad = function
     super.onLoad

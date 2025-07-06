@@ -40,14 +40,31 @@ end function
 
 PlayerCharacter.handlePlatformCollisions = function
     for platform in self.platforms
-        if self.sprite.worldBounds.overlaps(platform.sprite.worldBounds) and
-        self.isGroundedOn(platform) and
-        self.velocity.y < 0 then
-            self.position.y = platform.sprite.worldBounds.y +
-            platform.sprite.worldBounds.height * 0.5 +
-            self.sprite.worldBounds.height * 0.5
-            
-            self.velocity.y = 0
+        if self.sprite.worldBounds.overlaps(platform.sprite.worldBounds) then
+            if self.isGroundedOn(platform) and self.velocity.y < 0 then
+                self.position.y = platform.sprite.worldBounds.y +
+                platform.sprite.worldBounds.height * 0.5 +
+                self.sprite.worldBounds.height * 0.5
+                self.velocity.y = 0
+            end if
+            if self.isCollidingLeftWith(platform) and self.velocity.x < 0 then
+                self.position.x = platform.sprite.worldBounds.x +
+                platform.sprite.worldBounds.width * 0.5 +
+                self.sprite.worldBounds.width * 0.5
+                self.velocity.x = 0
+            end if
+            if self.isCollidingRightWith(platform) and self.velocity.x > 0 then
+                self.position.x = platform.sprite.worldBounds.x -
+                platform.sprite.worldBounds.width * 0.5 -
+                self.sprite.worldBounds.width * 0.5
+                self.velocity.x = 0
+            end if
+            if self.isCollidingOnTop(platform) and self.velocity. y > 0 then
+                self.position.y = platform.sprite.worldBounds.y -
+                platform.sprite.worldBounds.height * 0.5 -
+                self.sprite.worldBounds.height * 0.5
+                self.velocity.y = 0
+            end if
         end if
     end for
 end function
@@ -56,9 +73,40 @@ PlayerCharacter.isGroundedOn = function(platform)
     botBounds = new Bounds
     botBounds.x = self.sprite.worldBounds.x
     botBounds.y = self.sprite.worldBounds.y - self.sprite.worldBounds.height * 0.5 - 1
-    botBounds.width = self.sprite.worldBounds.width
+    botBounds.width = self.sprite.worldBounds.width - 4
     botBounds.height = 2
-    return botBounds.overlaps(platform.sprite.worldBounds)
+    return botBounds.overlaps(platform.sprite.worldBounds) and
+        platform.sprite.worldBounds.y + platform.sprite.worldBounds.height * 0.5 - 8 <
+        self.sprite.worldBounds.y - self.sprite.worldBounds.height * 0.5
+end function
+
+PlayerCharacter.isCollidingLeftWith = function(platform)
+    leftBounds = new Bounds
+    leftBounds.x = self.sprite.worldBounds.x - self.sprite.worldBounds.width * 0.5 - 1
+    leftBounds.y = self.sprite.worldBounds.y
+    leftBounds.widht = 2
+    leftBounds.height = self.sprite.worldBounds.height - 16
+    return leftBounds.overlaps(platform.sprite.worldBounds)
+end function
+
+PlayerCharacter.isCollidingRightWith = function(platform)
+    rightBounds = new Bounds
+    rightBounds.x = self.sprite.worldBounds.x + self.sprite.worldBounds.width * 0.5 + 1
+    rightBounds.y = self.sprite.worldBounds.y
+    rightBounds.widht = 2
+    rightBounds.height = self.sprite.worldBounds.height - 16
+    return rightBounds.overlaps(platform.sprite.worldBounds)
+end function
+
+PlayerCharacter.isCollidingOnTop = function(platform)
+    topBounds = new Bounds
+    topBounds.x = self.sprite.worldBounds.x
+    topBounds.y = self.sprite.worldBounds.y + self.sprite.worldBounds.height * 0.5 + 1
+    topBounds.width = self.sprite.worldBounds.width - 4
+    topBounds.height = 2
+    return topBounds.overlaps(platform.sprite.worldBounds) and
+        platform.sprite.worldBounds.y - platform.sprite.worldBounds.height * 0.5 + 8 >
+        self.sprite.worldBounds.y + self.sprite.worldBounds.height * 0.5
 end function
 
 PlayerCharacter.isGrounded = function

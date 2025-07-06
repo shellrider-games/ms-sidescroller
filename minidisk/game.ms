@@ -70,8 +70,11 @@ scene1.onLoad = function
     pf2 = platformActor.create(220, 100)
     scene1.actors.push pf2
 
-    scene1.player = playerCharacter.create(480, 320)
-    scene1.player.platforms = [pf, pf2]
+    pf3 = platformActor.create(280, 250)
+    scene1.actors.push pf3
+
+    scene1.player = playerCharacter.create(560, 320)
+    scene1.player.platforms = [pf, pf2 ,pf3]
     scene1.actors.push scene1.player
 end function
 

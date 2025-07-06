@@ -40,8 +40,13 @@ end function
 
 PlayerCharacter.handlePlatformCollisions = function
     for platform in self.platforms
-        if self.sprite.worldBounds.overlaps(platform.sprite.worldBounds) and self.isGroundedOn(platform) and self.velocity.y < 0 then
-            self.position.y = platform.sprite.worldBounds.y + platform.sprite.worldBounds.height * 0.5 + self.sprite.worldBounds.height * 0.5
+        if self.sprite.worldBounds.overlaps(platform.sprite.worldBounds) and
+        self.isGroundedOn(platform) and
+        self.velocity.y < 0 then
+            self.position.y = platform.sprite.worldBounds.y +
+            platform.sprite.worldBounds.height * 0.5 +
+            self.sprite.worldBounds.height * 0.5
+            
             self.velocity.y = 0
         end if
     end for

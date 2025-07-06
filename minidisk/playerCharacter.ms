@@ -1,7 +1,5 @@
 ensureImport "spriteActor"
 
-
-
 PlayerCharacter = new spriteActor.SpriteActor
 
 create = function(x = 0, y = 0)
